@@ -3,6 +3,8 @@ package com.server.overtime.marker.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.server.overtime.member.ctrl.req.AdminKey;
+import org.springframework.beans.factory.annotation.Value;
 import com.server.overtime.bookmark.sv.BookmarkSv;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class MarkerService {
+    @Value("${admin.key}")
+    private String adminKey;
     private final MarkerRepository markerRepository;
     private final BookmarkSv bookmarkSv;
 
@@ -50,10 +54,13 @@ public class MarkerService {
     }
 
     @Transactional
-    public void deleteMarker(Long markerRowId) {
-        Marker marker = markerRepository.findById(markerRowId)
-                .orElseThrow(() -> new RuntimeException("Marker not found with id: " + markerRowId));
-        markerRepository.delete(marker);
+    public void deleteMarker(Long markerRowId, AdminKey adminKey) {
+        if (this.adminKey.equals(adminKey.getAdminKey())) {
+
+            Marker marker = markerRepository.findById(markerRowId)
+                    .orElseThrow(() -> new RuntimeException("Marker not found with id: " + markerRowId));
+            markerRepository.delete(marker);
+        }
     }
 
     @Transactional(readOnly = true)

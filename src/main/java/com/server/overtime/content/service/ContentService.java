@@ -3,6 +3,8 @@ package com.server.overtime.content.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.server.overtime.member.ctrl.req.AdminKey;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +20,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ContentService {
-
+    @Value("${admin.key}")
+    private String adminKey;
     private final ContentRepository contentRepository;
     private final MarkerRepository markerRepository;
 
@@ -59,10 +62,12 @@ public class ContentService {
     }
 
     @Transactional
-    public void deleteContent(Long contentId) {
-        Content content = contentRepository.findById(contentId)
-                .orElseThrow(() -> new RuntimeException("Content not found with id: " + contentId));
-        contentRepository.delete(content);
+    public void deleteContent(Long contentId, AdminKey adminKey) {
+        if(this.adminKey.equals(adminKey.getAdminKey())) {
+            Content content = contentRepository.findById(contentId)
+                    .orElseThrow(() -> new RuntimeException("Content not found with id: " + contentId));
+            contentRepository.delete(content);
+        }
     }
 
     private ContentResponse convertToResponse(Content content) {

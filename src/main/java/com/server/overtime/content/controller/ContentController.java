@@ -3,6 +3,7 @@ package com.server.overtime.content.controller;
 import com.server.overtime.content.dto.ContentRequest;
 import com.server.overtime.content.dto.ContentResponse;
 import com.server.overtime.content.service.ContentService;
+import com.server.overtime.member.ctrl.req.AdminKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,9 @@ public class ContentController {
     }
 
     @DeleteMapping("/{contentId}")
-    public ResponseEntity<Void> deleteContent(@PathVariable Long contentId) {
-        contentService.deleteContent(contentId);
+    public ResponseEntity<Void> deleteContent(@PathVariable Long contentId, @RequestBody
+    AdminKey adminKey) {
+        contentService.deleteContent(contentId, adminKey);
         return ResponseEntity.noContent().build();
     }
 }

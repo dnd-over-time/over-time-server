@@ -23,6 +23,8 @@ public class Content {
     @JoinColumn(name = "markerRowId")
     private Marker marker;
 
+    @Lob
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     private String name;

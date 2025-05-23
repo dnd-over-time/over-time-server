@@ -31,6 +31,9 @@ dependencies {
 //    swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 
+//    WebClient 를 사용하기 위한 webflux 의존성
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.mysql:mysql-connector-j")

@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.server.overtime.marker.dto.MarkerRequest;
 import com.server.overtime.marker.dto.MarkerResponse;
 import com.server.overtime.marker.entity.Marker;
 import com.server.overtime.marker.repository.MarkerRepository;
@@ -16,6 +18,19 @@ import lombok.RequiredArgsConstructor;
 public class MarkerService {
     private final MarkerRepository markerRepository;
 
+    @Transactional
+    public MarkerResponse createMarker(MarkerRequest requestDto) {
+        Marker marker = Marker.builder()
+                .latitude(requestDto.getLatitude())
+                .longitude(requestDto.getLongitude())
+                .locationName(requestDto.getLocationName())
+                .address(requestDto.getAddress())
+                .build();
+        Marker savedMarker = markerRepository.save(marker);
+        return convertToResponse(savedMarker);
+    }
+
+    @Transactional(readOnly = true)
     public List<MarkerResponse> getAllMarkers() {
         List<Marker> markers = markerRepository.findAll();
 
@@ -24,11 +39,19 @@ public class MarkerService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public MarkerResponse getMarkerById(Long markerRowId) {
         Marker marker = markerRepository.findById(markerRowId)
-                .orElseThrow(() -> new RuntimeException("Marker not found"));
+                .orElseThrow(() -> new RuntimeException("Marker not found with id: " + markerRowId));
 
         return convertToResponse(marker);
+    }
+
+    @Transactional
+    public void deleteMarker(Long markerRowId) {
+        Marker marker = markerRepository.findById(markerRowId)
+                .orElseThrow(() -> new RuntimeException("Marker not found with id: " + markerRowId));
+        markerRepository.delete(marker);
     }
 
     private MarkerResponse convertToResponse(Marker marker) {

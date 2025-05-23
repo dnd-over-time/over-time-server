@@ -2,56 +2,42 @@ package com.server.overtime.marker.controller;
 
 import java.util.List;
 
+import com.server.overtime.marker.dto.MarkerRequest;
 import com.server.overtime.marker.dto.MarkerResponse;
 import com.server.overtime.marker.service.MarkerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/audioguide")
+@RequestMapping("/api/v1/audioguide/markers")
 @RequiredArgsConstructor
 public class MarkerController {
-    // @GetMapping("/spots")
-    // public List<MarkerResponse> getAudioSpots() {
-    // List<MarkerResponse> audioSpots = List.of(
-    // MarkerResponse.builder()
-    // .markerRowId(1L)
-    // .title("Spot 1")
-    // .description("Description for Spot 1")
-    // .name("dongmin")
-    // .markerUrl("https://example.com/audio1.mp3")
-    // .latitude("37.7749")
-    // .longitude("-122.4194")
-    // .fileExtension("mp3")
-    // .build(),
-    // MarkerResponse.builder()
-    // .markerRowId(2L)
-    // .title("Spot 2")
-    // .description("Description for Spot 2")
-    // .name("junwon")
-    // .markerUrl("https://example.com/audio2.mp3")
-    // .latitude("34.0522")
-    // .longitude("-118.2437")
-    // .fileExtension("mp3")
-    // .build(),
-    // MarkerResponse.builder()
-    // .name("Spot 3")
-    // .markerUrl("https://example.com/audio1.mp3")
-    // .latitude("37.7749")
-    // .longitude("-122.4194")
-    // .fileExtension("mp3")
-    // .build());
-    // return audioSpots;
-    // }
+
     private final MarkerService markerService;
 
-    @GetMapping("/markers")
-    public List<MarkerResponse> getMarkersAroundLocation() {
-        return markerService.getAllMarkers();
+    @PostMapping
+    public ResponseEntity<MarkerResponse> createMarker(@RequestBody MarkerRequest requestDto) {
+        MarkerResponse createdMarker = markerService.createMarker(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdMarker);
     }
 
-    @GetMapping("/markers/{markerRowId}")
-    public MarkerResponse getMarkerById(@PathVariable Long markerRowId) {
-        return markerService.getMarkerById(markerRowId);
+    @GetMapping
+    public ResponseEntity<List<MarkerResponse>> getAllMarkers() {
+        List<MarkerResponse> markers = markerService.getAllMarkers();
+        return ResponseEntity.ok(markers);
+    }
+
+    @GetMapping("/{markerRowId}")
+    public ResponseEntity<MarkerResponse> getMarkerById(@PathVariable Long markerRowId) {
+        MarkerResponse marker = markerService.getMarkerById(markerRowId);
+        return ResponseEntity.ok(marker);
+    }
+
+    @DeleteMapping("/{markerRowId}")
+    public ResponseEntity<Void> deleteMarker(@PathVariable Long markerRowId) {
+        markerService.deleteMarker(markerRowId);
+        return ResponseEntity.noContent().build();
     }
 }

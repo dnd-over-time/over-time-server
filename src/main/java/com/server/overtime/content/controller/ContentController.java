@@ -1,26 +1,44 @@
 package com.server.overtime.content.controller;
 
+import com.server.overtime.content.dto.ContentRequest;
 import com.server.overtime.content.dto.ContentResponse;
 import com.server.overtime.content.service.ContentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/contents")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class ContentController {
 
     private final ContentService contentService;
 
-    @GetMapping("/markers/{markerRowId}/contents")
-    public List<ContentResponse> getContentsByMarkerId(@PathVariable Long markerRowId) {
-        return contentService.getContentsByMarkerId(markerRowId);
+    @PostMapping
+    public ResponseEntity<ContentResponse> createContent(@RequestBody ContentRequest requestDto) {
+        ContentResponse createdContent = contentService.createContent(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdContent);
     }
 
-    @GetMapping("/contents/{contentId}")
-    public ContentResponse getContentById(@PathVariable Long contentId) {
-        return contentService.getContentById(contentId);
+    @GetMapping("/marker/{markerRowId}")
+    public ResponseEntity<List<ContentResponse>> getContentsByMarkerId(@PathVariable Long markerRowId) {
+        List<ContentResponse> contents = contentService.getContentsByMarkerId(markerRowId);
+        return ResponseEntity.ok(contents);
+    }
+
+
+    @GetMapping("/{contentId}")
+    public ResponseEntity<ContentResponse> getContentById(@PathVariable Long contentId) {
+        ContentResponse content = contentService.getContentById(contentId);
+        return ResponseEntity.ok(content);
+    }
+
+    @DeleteMapping("/{contentId}")
+    public ResponseEntity<Void> deleteContent(@PathVariable Long contentId) {
+        contentService.deleteContent(contentId);
+        return ResponseEntity.noContent().build();
     }
 }

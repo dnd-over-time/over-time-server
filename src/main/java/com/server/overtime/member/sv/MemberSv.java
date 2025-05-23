@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -50,7 +52,6 @@ public class MemberSv {
 
     private Boolean idVertifiedUser(KakaoUserInfo kakaoUserInfo) {
         if(kakaoUserInfo.getIdToken() == 0L) throw new KakaoException.KAKAO_MEMBER_NOT_FOUND();
-        if(memberRepository.findByIdToken(kakaoUserInfo.getIdToken()).isPresent()) return true;
         return false;
     }
 
@@ -61,7 +62,8 @@ public class MemberSv {
 
         KakaoUserInfo kakaoUserInfo = kakaoSv.getKakaoUserInfo(accessToken);
         if(idVertifiedUser(kakaoUserInfo)) return memberRepository.findByIdToken(kakaoUserInfo.getIdToken()).get().getId();
-        if(memberRepository.findByNickname(kakaoUserInfo.kakaoAccount.profile.getNickname()).isPresent()) return 0L;
+        Optional<MemberEntity> member = memberRepository.findByNickname(kakaoUserInfo.kakaoAccount.profile.getNickname());
+        if(member.isPresent()) return member.get().getId();
 
         return memberRepository.save(kakaoUserInfo);
     }

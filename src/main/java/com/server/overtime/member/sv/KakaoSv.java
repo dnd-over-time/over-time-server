@@ -52,9 +52,6 @@ public class KakaoSv {
     }
 
     public String getKakaoAccessToken(String authorizationCode) {
-        log.warn("KAKAO_CLIENT_ID : {}", KAKAO_CLIENT_ID);
-        log.warn("KAKAO_REDIRECT_URL : {}", KAKAO_REDIRECT_URL);
-        log.warn("authorizationCode : {}", authorizationCode);
         KakaoTokenInfo kakaoTokenInfo =
                 WebClient.create("https://kauth.kakao.com")
                         .post()

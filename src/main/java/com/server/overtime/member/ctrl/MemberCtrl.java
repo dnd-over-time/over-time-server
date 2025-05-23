@@ -12,8 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RestController("/api/members")
 @CrossOrigin(origins = "*")
+@RestController("/api/members")
 public class MemberCtrl {
 
     private final MemberSv memberSv;

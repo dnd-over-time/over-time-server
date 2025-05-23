@@ -1,5 +1,6 @@
 package com.server.overtime.member.dao;
 
+import com.server.overtime.member.ctrl.res.JoinRes;
 import com.server.overtime.member.dao.entity.MemberEntity;
 import com.server.overtime.member.kakao.KakaoUserInfo;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,13 @@ public class MemberRepository {
         log.warn("profileImageUrl : ", kakaoUserInfo.getKakaoAccount().profile.getProfileImageUrl());
         log.warn("getThumbnailImageUrl : ", kakaoUserInfo.getKakaoAccount().profile.getThumbnailImageUrl());
         return memberEntity.getId();
+    }
+
+    public JoinRes saveV1(KakaoUserInfo kakaoUserInfo) {
+        MemberEntity memberEntity = memberJpaRepository.save(MemberEntity.of(kakaoUserInfo.getIdToken().toString(), kakaoUserInfo.kakaoAccount.profile.getNickname(), kakaoUserInfo.kakaoAccount.profile.getProfileImageUrl()));
+        log.warn("profileImageUrl : ", kakaoUserInfo.getKakaoAccount().profile.getProfileImageUrl());
+        log.warn("getThumbnailImageUrl : ", kakaoUserInfo.getKakaoAccount().profile.getThumbnailImageUrl());
+        return memberEntity.toJoinRes();
     }
 
     public Optional<MemberEntity> findByIdToken(Long idToken) {

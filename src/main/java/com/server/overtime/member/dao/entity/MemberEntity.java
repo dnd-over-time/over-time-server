@@ -1,5 +1,6 @@
 package com.server.overtime.member.dao.entity;
 
+import com.server.overtime.member.ctrl.res.JoinRes;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +32,10 @@ public class MemberEntity {
     private String profileImageUrl;
 
     public static MemberEntity of(String idToken, String nickname, String profileImageUrl) {
-        return new MemberEntity(null, idToken, nickname, profileImageUrl);
+        return new MemberEntity(null, nickname, idToken, profileImageUrl);
+    }
+
+    public JoinRes toJoinRes() {
+        return new JoinRes(id, nickname, profileImageUrl);
     }
 }

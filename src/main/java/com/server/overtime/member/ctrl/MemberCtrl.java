@@ -1,6 +1,7 @@
 package com.server.overtime.member.ctrl;
 
 import com.server.overtime.member.ctrl.req.AdminKey;
+import com.server.overtime.member.ctrl.req.AllInOneReq;
 import com.server.overtime.member.ctrl.req.RegisterReq;
 import com.server.overtime.member.ctrl.res.MemberRowIdRes;
 import com.server.overtime.member.sv.MemberSv;
@@ -64,5 +65,15 @@ public class MemberCtrl {
         memberSv.deleteMemberByMemberId(memberRowId, adminKey);
     }
 
+
+    @PostMapping("/v1/allInOne")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "(백엔드용)바로 회원가입하기 위한 API")
+    public MemberRowIdRes allInOne(
+            @RequestBody @Valid AllInOneReq allInOneReq
+            ) {
+        Long result = memberSv.allInOne(allInOneReq.idCode());
+        return new MemberRowIdRes(result);
+    }
 
 }

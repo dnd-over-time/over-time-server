@@ -55,4 +55,15 @@ public class MemberSv {
     }
 
 
+    public Long allInOne(String idCode) {
+        String accessToken = kakaoSv.getKakaoAccessToken(idCode);
+        log.warn("accessToken 받기 완료! : {}", accessToken);
+
+        KakaoUserInfo kakaoUserInfo = kakaoSv.getKakaoUserInfo(accessToken);
+        if(idVertifiedUser(kakaoUserInfo)) return memberRepository.findByIdToken(kakaoUserInfo.getIdToken()).get().getId();
+        if(memberRepository.findByNickname(kakaoUserInfo.kakaoAccount.profile.getNickname()).isPresent()) return 0L;
+
+        return memberRepository.save(kakaoUserInfo);
+    }
+
 }

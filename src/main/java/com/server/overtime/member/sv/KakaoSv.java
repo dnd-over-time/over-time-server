@@ -52,30 +52,35 @@ public class KakaoSv {
     }
 
     public String getKakaoAccessToken(String authorizationCode) {
-        KakaoTokenInfo kakaoTokenInfo =
-                WebClient.create("https://kauth.kakao.com")
-                        .post()
-                        .uri("/oauth/token")
-                        .header(
-                                HttpHeaders.CONTENT_TYPE,
-                                HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
-                        .body(
-                                BodyInserters.fromFormData("grant_type", "authorization_code")
-                                        .with("client_id", KAKAO_CLIENT_ID)
-                                        .with("redirect_uri", KAKAO_REDIRECT_URL)
-                                        .with("code", authorizationCode)
-                        )
-                        .retrieve()
-                        .onStatus(
-                                HttpStatusCode::is4xxClientError,
-                                clientResponse ->
-                                        Mono.error(new KakaoException.INCORRECT_ID_CODE()))
-                        .onStatus(
-                                HttpStatusCode::is5xxServerError,
-                                clientResponse ->
-                                        Mono.error(new KakaoException.KAKAO_SERVER_ERROR()))
-                        .bodyToMono(KakaoTokenInfo.class)
-                        .block();
-        return kakaoTokenInfo.getAccessToken();
+        try {
+            KakaoTokenInfo kakaoTokenInfo =
+                    WebClient.create("https://kauth.kakao.com")
+                            .post()
+                            .uri("/oauth/token")
+                            .header(
+                                    HttpHeaders.CONTENT_TYPE,
+                                    HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
+                            .body(
+                                    BodyInserters.fromFormData("grant_type", "authorization_code")
+                                            .with("client_id", KAKAO_CLIENT_ID)
+                                            .with("redirect_uri", KAKAO_REDIRECT_URL)
+                                            .with("code", authorizationCode)
+                            )
+                            .retrieve()
+                            .onStatus(
+                                    HttpStatusCode::is4xxClientError,
+                                    clientResponse ->
+                                            Mono.error(new KakaoException.INCORRECT_ID_CODE()))
+                            .onStatus(
+                                    HttpStatusCode::is5xxServerError,
+                                    clientResponse ->
+                                            Mono.error(new KakaoException.KAKAO_SERVER_ERROR()))
+                            .bodyToMono(KakaoTokenInfo.class)
+                            .block();
+            return kakaoTokenInfo.getAccessToken();
+        }
+        finally {
+
+        }
     }
 }

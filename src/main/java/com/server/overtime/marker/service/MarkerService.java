@@ -3,6 +3,7 @@ package com.server.overtime.marker.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.server.overtime.bookmark.sv.BookmarkSv;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MarkerService {
     private final MarkerRepository markerRepository;
+    private final BookmarkSv bookmarkSv;
 
     @Transactional
     public MarkerResponse createMarker(MarkerRequest requestDto) {
@@ -52,6 +54,15 @@ public class MarkerService {
         Marker marker = markerRepository.findById(markerRowId)
                 .orElseThrow(() -> new RuntimeException("Marker not found with id: " + markerRowId));
         markerRepository.delete(marker);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MarkerResponse> getMarkerByMemberId(Long markerRowId) {
+        List<Long> markerRowIdList = bookmarkSv.getMarkerRowIdList(markerRowId);
+        Marker marker = markerRepository.findByIdList(markerRowIdList)
+                .orElseThrow(() -> new RuntimeException("Marker not found with id: " + markerRowId));
+
+        return convertToResponse(marker);
     }
 
     private MarkerResponse convertToResponse(Marker marker) {

@@ -34,6 +34,9 @@ dependencies {
 //    WebClient 를 사용하기 위한 webflux 의존성
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 
+//    로그백
+    implementation("com.github.loki4j:loki-logback-appender:1.4.0")
+
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.mysql:mysql-connector-j")

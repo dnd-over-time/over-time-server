@@ -37,6 +37,8 @@ dependencies {
 //    로그백
     implementation("com.github.loki4j:loki-logback-appender:1.4.0")
 
+//    s3
+    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.mysql:mysql-connector-j")

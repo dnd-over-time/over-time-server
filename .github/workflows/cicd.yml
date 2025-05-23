@@ -134,17 +134,27 @@ jobs:
             nohup java -jar app.jar > logs/app.log 2>&1 &
             echo $! > app.pid
             
-            sleep 20
+            sleep 30  # 30초로 늘림
+      
+            echo "=== 전체 로그 확인 ==="
+            cat logs/app.log
+      
+            echo "=== 프로세스 상태 확인 ==="
             if ps -p $(cat app.pid) > /dev/null; then
+              echo "Process is running"
               if lsof -Pi :8088 -sTCP:LISTEN -t >/dev/null; then
-                echo "success"
+                echo "8088 port is listening - SUCCESS"
               else
-                echo "Not 8088"
-                tail -n 50 logs/app.log
+                echo "8088 port is NOT listening"
+                echo "=== 포트 사용 현황 ==="
+                netstat -tulpn | grep :8088 || echo "No process using 8088"
+                echo "=== 모든 LISTEN 포트 확인 ==="
+                netstat -tulpn | grep LISTEN
                 exit 1
               fi
             else
-              echo "Failed"
-              tail -n 50 logs/app.log
+              echo "Process is NOT running"
+              echo "=== 전체 로그 ==="
+              cat logs/app.log
               exit 1
             fi

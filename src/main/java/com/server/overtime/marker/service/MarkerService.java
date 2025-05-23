@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.server.overtime.member.ctrl.req.AdminKey;
 import org.springframework.beans.factory.annotation.Value;
+import com.server.overtime.bookmark.sv.BookmarkSv;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ public class MarkerService {
     @Value("${admin.key}")
     private String adminKey;
     private final MarkerRepository markerRepository;
+    private final BookmarkSv bookmarkSv;
 
     @Transactional
     public MarkerResponse createMarker(MarkerRequest requestDto) {
@@ -59,6 +61,15 @@ public class MarkerService {
                     .orElseThrow(() -> new RuntimeException("Marker not found with id: " + markerRowId));
             markerRepository.delete(marker);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<MarkerResponse> getMarkerByMemberId(Long markerRowId) {
+        List<Long> markerRowIdList = bookmarkSv.getMarkerRowIdList(markerRowId);
+        List<Marker> markerList = markerRepository.findByIdList(markerRowIdList);
+
+        return markerList.stream().map(this::convertToResponse)
+                .collect(Collectors.toList());
     }
 
     private MarkerResponse convertToResponse(Marker marker) {

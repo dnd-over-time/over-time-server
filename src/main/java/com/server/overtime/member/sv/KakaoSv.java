@@ -76,7 +76,6 @@ public class KakaoSv {
                                         Mono.error(new KakaoException.KAKAO_SERVER_ERROR()))
                         .bodyToMono(KakaoTokenInfo.class)
                         .block();
-        log.warn("kakaoTokenInfo : {}", kakaoTokenInfo);
         return kakaoTokenInfo.getAccessToken();
     }
 }

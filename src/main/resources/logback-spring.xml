@@ -14,7 +14,7 @@
         </http>
         <format>
             <label>
-                <pattern>profile=${SPRING_PROFILES_ACTIVE:-unknown},host=${HOSTNAME},level=%level</pattern>
+                <pattern>profile=${SPRING_PROFILES_ACTIVE},host=${HOSTNAME},level=%level</pattern>
                 <readMarkers>true</readMarkers>
             </label>
             <message>
@@ -25,44 +25,16 @@
     </appender>
 
     <springProfile name="local">
-        <root level="WARN">
+        <root level="INFO">
             <appender-ref ref="CONSOLE_APPENDER"/>
-            <appender name="LOKI_APPENDER" class="com.github.loki4j.logback.Loki4jAppender">
-                <http>
-                    <url>http://jun-monitoring.kro.kr:3100/loki/api/v1/push</url>
-                </http>
-                <format>
-                    <label>
-                        <pattern>profile=local,host=${HOSTNAME},level=%level</pattern>
-                        <readMarkers>true</readMarkers>
-                    </label>
-                    <message>
-                        <pattern>%highlight([%-5level]) %d{yy-MM-dd HH:mm:ss.SSS} %green([%thread]) %yellow([traceId=%X{traceId}]) %cyan([%logger{0}:%line])-%message%n</pattern>
-                    </message>
-                    <sortByTime>true</sortByTime>
-                </format>
-            </appender>
+            <appender-ref ref="LOKI_APPENDER"/>
         </root>
     </springProfile>
 
     <springProfile name="prod">
         <root level="INFO">
             <appender-ref ref="CONSOLE_APPENDER"/>
-            <appender name="LOKI_APPENDER" class="com.github.loki4j.logback.Loki4jAppender">
-                <http>
-                    <url>http://jun-monitoring.kro.kr:3100/loki/api/v1/push</url>
-                </http>
-                <format>
-                    <label>
-                        <pattern>profile=prod,host=${HOSTNAME},level=%level</pattern>
-                        <readMarkers>true</readMarkers>
-                    </label>
-                    <message>
-                        <pattern>%highlight([%-5level]) %d{yy-MM-dd HH:mm:ss.SSS} %green([%thread]) %yellow([traceId=%X{traceId}]) %cyan([%logger{0}:%line])-%message%n</pattern>
-                    </message>
-                    <sortByTime>true</sortByTime>
-                </format>
-            </appender>
+            <appender-ref ref="LOKI_APPENDER"/>
         </root>
     </springProfile>
 </configuration>

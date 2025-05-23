@@ -1,10 +1,12 @@
 package com.server.overtime.member.sv;
 
 import com.server.overtime.member.ctrl.req.AdminKey;
+import com.server.overtime.member.ctrl.res.JoinRes;
 import com.server.overtime.member.dao.MemberRepository;
 import com.server.overtime.member.dao.entity.MemberEntity;
 import com.server.overtime.member.exception.AdminException;
 import com.server.overtime.member.exception.KakaoException;
+import com.server.overtime.member.exception.MemberException;
 import com.server.overtime.member.kakao.KakaoUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,16 +58,18 @@ public class MemberSv {
     }
 
 
-    public Long allInOne(String idCode) {
+    public JoinRes allInOne(String idCode) {
         String accessToken = kakaoSv.getKakaoAccessToken(idCode);
         log.warn("accessToken 받기 완료! : {}", accessToken);
 
         KakaoUserInfo kakaoUserInfo = kakaoSv.getKakaoUserInfo(accessToken);
-        if(idVertifiedUser(kakaoUserInfo)) return memberRepository.findByIdToken(kakaoUserInfo.getIdToken()).get().getId();
-        Optional<MemberEntity> member = memberRepository.findByNickname(kakaoUserInfo.kakaoAccount.profile.getNickname());
-        if(member.isPresent()) return member.get().getId();
+        if(kakaoUserInfo.getIdToken() == 0L) throw new KakaoException.KAKAO_MEMBER_NOT_FOUND();
+        Optional<MemberEntity> member = memberRepository.findByIdToken(kakaoUserInfo.getIdToken());
+        if(member.isPresent()) return member.get().toJoinRes();
 
-        return memberRepository.save(kakaoUserInfo);
+        if(memberRepository.findByNickname(kakaoUserInfo.kakaoAccount.profile.getNickname()).isPresent()) throw new MemberException.MEMBER_NICKNAME_CONFLICT();
+
+        return memberRepository.saveV1(kakaoUserInfo);
     }
 
 }

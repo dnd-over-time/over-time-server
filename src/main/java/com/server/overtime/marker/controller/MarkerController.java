@@ -6,6 +6,8 @@ import com.server.overtime.marker.dto.MarkerRequest;
 import com.server.overtime.marker.dto.MarkerResponse;
 import com.server.overtime.marker.service.MarkerService;
 import com.server.overtime.member.ctrl.req.AdminKey;
+
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,24 +21,28 @@ public class MarkerController {
     private final MarkerService markerService;
 
     @PostMapping
+    @Operation(summary = "마커 생성 API")
     public ResponseEntity<MarkerResponse> createMarker(@RequestBody MarkerRequest requestDto) {
         MarkerResponse createdMarker = markerService.createMarker(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdMarker);
     }
 
     @GetMapping
+    @Operation(summary = "모든 마커 조회 API")
     public ResponseEntity<List<MarkerResponse>> getAllMarkers() {
         List<MarkerResponse> markers = markerService.getAllMarkers();
         return ResponseEntity.ok(markers);
     }
 
     @GetMapping("/{markerRowId}")
+    @Operation(summary = "마커 ID로 마커 조회 API")
     public ResponseEntity<MarkerResponse> getMarkerById(@PathVariable Long markerRowId) {
         MarkerResponse marker = markerService.getMarkerById(markerRowId);
         return ResponseEntity.ok(marker);
     }
 
     @DeleteMapping("/{markerRowId}")
+    @Operation(summary = "마커 삭제 API")
     public ResponseEntity<Void> deleteMarker(@PathVariable Long markerRowId, @RequestBody AdminKey adminKey) {
         markerService.deleteMarker(markerRowId, adminKey);
         return ResponseEntity.noContent().build();

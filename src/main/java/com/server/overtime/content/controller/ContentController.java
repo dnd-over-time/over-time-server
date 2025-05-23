@@ -3,7 +3,10 @@ package com.server.overtime.content.controller;
 import com.server.overtime.content.dto.ContentRequest;
 import com.server.overtime.content.dto.ContentResponse;
 import com.server.overtime.content.service.ContentService;
+import com.server.overtime.marker.dto.MarkerResponse;
 import com.server.overtime.member.ctrl.req.AdminKey;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +45,20 @@ public class ContentController {
     AdminKey adminKey) {
         contentService.deleteContent(contentId, adminKey);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping("/markingList/{memberRowId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "북마킹 컨텐츠 목록 API")
+    public List<ContentResponse> getMarkingList(
+            @PathVariable
+            @Parameter(
+                    name = "memberRowId",
+                    description = "조회하려는 사용자의 memberRowid",
+                    required = true)
+            Long memberRowId) {
+        return contentService.getContentByMemberId(memberRowId);
+
     }
 }

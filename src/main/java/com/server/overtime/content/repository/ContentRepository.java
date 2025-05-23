@@ -11,4 +11,6 @@ import com.server.overtime.content.entity.Content;
 public interface ContentRepository extends JpaRepository<Content, Long> {
 
     List<Content> findByMarkerMarkerRowId(Long markerId);
+
+    List<Content> findByContentRowIdIn(List<Long> markerRowIdList);
 }

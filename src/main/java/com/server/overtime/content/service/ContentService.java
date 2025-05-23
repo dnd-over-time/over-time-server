@@ -3,6 +3,8 @@ package com.server.overtime.content.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.server.overtime.bookmark.entity.Bookmark;
+import com.server.overtime.bookmark.sv.BookmarkSv;
 import com.server.overtime.member.ctrl.req.AdminKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class ContentService {
     private String adminKey;
     private final ContentRepository contentRepository;
     private final MarkerRepository markerRepository;
+    private final BookmarkSv bookmarkSv;
 
     @Transactional // 추가
     public ContentResponse createContent(ContentRequest requestDto) {
@@ -69,6 +72,15 @@ public class ContentService {
             contentRepository.delete(content);
         }
     }
+
+    @Transactional
+    public List<ContentResponse> getContentByMemberId(Long memberRowId) {
+
+        List<Long> contentRowIdList = bookmarkSv.getContentRowIdList(memberRowId);
+        return contentRepository.findByContentRowIdIn(contentRowIdList)
+                .stream().map(this::convertToResponse).toList();
+    }
+
 
     private ContentResponse convertToResponse(Content content) {
         return ContentResponse.builder()

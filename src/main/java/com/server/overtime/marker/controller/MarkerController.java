@@ -47,7 +47,8 @@ public class MarkerController {
 
     @GetMapping("/{memberRowId}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "북마킹 목록 API")
+    @Operation(summary = "(삭제)북마킹 목록 API")
+    @Deprecated
     public List<MarkerResponse> getMarkingList(
             @PathVariable("memberRowid")
             @Parameter(

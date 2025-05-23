@@ -66,10 +66,10 @@ public class MarkerService {
     @Transactional(readOnly = true)
     public List<MarkerResponse> getMarkerByMemberId(Long markerRowId) {
         List<Long> markerRowIdList = bookmarkSv.getMarkerRowIdList(markerRowId);
-        Marker marker = markerRepository.findByIdList(markerRowIdList)
-                .orElseThrow(() -> new RuntimeException("Marker not found with id: " + markerRowId));
+        List<Marker> markerList = markerRepository.findByIdList(markerRowIdList);
 
-        return convertToResponse(marker);
+        return markerList.stream().map(this::convertToResponse)
+                .collect(Collectors.toList());
     }
 
     private MarkerResponse convertToResponse(Marker marker) {

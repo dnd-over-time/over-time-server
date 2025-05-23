@@ -34,9 +34,9 @@ public class FileService {
                 new GeneratePresignedUrlRequest(bucket, fileName)
                         .withMethod(HttpMethod.PUT)
                         .withExpiration(getPreSignedUrlExpiration());
-        generatePresignedUrlRequest.addRequestParameter(
-                Headers.S3_CANNED_ACL,
-                CannedAccessControlList.PublicRead.toString());
+//        generatePresignedUrlRequest.addRequestParameter(
+//                Headers.S3_CANNED_ACL,
+//                CannedAccessControlList.PublicReadWrite.toString());
         return generatePresignedUrlRequest;
     }
 
@@ -44,7 +44,7 @@ public class FileService {
     private Date getPreSignedUrlExpiration() {
         Date expiration = new Date();
         long expTimeMillis = expiration.getTime();
-        expTimeMillis += 1000 * 60 * 2;
+        expTimeMillis += 1000 * 60 * 10;
         expiration.setTime(expTimeMillis);
         return expiration;
     }
